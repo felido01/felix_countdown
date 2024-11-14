@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>352-Day Countdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        .countdown {
+            text-align: center;
+            font-size: 2em;
+            display: flex;
+            gap: 20px;
+        }
+
+        .countdown div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .number {
+            font-size: 3em;
+            font-weight: bold;
+            padding: 10px 20px;
+            background: #34495e;
+            border-radius: 8px;
+        }
+
+        .label {
+            font-size: 0.5em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown">
+        <div>
+            <div class="number" id="days">--</div>
+            <div class="label">Days</div>
+        </div>
+        <div>
+            <div class="number" id="hours">--</div>
+            <div class="label">Hours</div>
+        </div>
+        <div>
+            <div class="number" id="minutes">--</div>
+            <div class="label">Minutes</div>
+        </div>
+        <div>
+            <div class="number" id="seconds">--</div>
+            <div class="label">Seconds</div>
+        </div>
+    </div>
+
+    <script>
+        const countdownDays = 352;
+        const millisecondsInADay = 24 * 60 * 60 * 1000;
+        let targetDate = localStorage.getItem("targetDate");
+
+        // Set target date to exactly 352 days from now if not in localStorage
+        if (!targetDate) {
+            targetDate = new Date().getTime() + countdownDays * millisecondsInADay;
+            localStorage.setItem("targetDate", targetDate);
+        } else {
+            targetDate = parseInt(targetDate, 10);
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const timeLeft = targetDate - now;
+
+            if (timeLeft >= 0) {
+                const days = Math.floor(timeLeft / millisecondsInADay);
+                const hours = Math.floor((timeLeft % millisecondsInADay) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                document.getElementById("days").textContent = days;
+                document.getElementById("hours").textContent = hours;
+                document.getElementById("minutes").textContent = minutes;
+                document.getElementById("seconds").textContent = seconds;
+            } else {
+                document.querySelector(".countdown").innerHTML = "Countdown Complete!";
+                localStorage.removeItem("targetDate");
+                clearInterval(countdownTimer);
+            }
+        }
+
+        updateCountdown();
+        const countdownTimer = setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
